@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit & Activity Heatmap | Macarena Caviedes</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+    .demo-banner { background: linear-gradient(90deg, #3d1a6e, #7c3aed); color: #ede9fe; padding: 10px 24px; text-align: center; font-size: 14px; letter-spacing: 0.3px; }
+    .demo-banner strong { color: #c4b5fd; }
+    header { background: linear-gradient(135deg, #0d1117, #161b27); padding: 32px 40px; border-bottom: 1px solid #21262d; }
+    header h1 { font-size: 26px; font-weight: 700; color: #f0f6fc; }
+    header p { margin-top: 6px; font-size: 14px; color: #8b949e; }
+    .year-tabs { display: flex; gap: 8px; margin-top: 16px; }
+    .year-tab { padding: 5px 14px; border-radius: 6px; border: 1px solid #30363d; background: #161b22; color: #8b949e; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+    .year-tab.active { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 28px 40px; }
+    .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 18px 20px; text-align: center; }
+    .stat-card .val { font-size: 28px; font-weight: 700; color: #a78bfa; }
+    .stat-card .lbl { font-size: 12px; color: #8b949e; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-card .sub { font-size: 12px; color: #3fb950; margin-top: 2px; }
+    .section { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 24px 28px; margin-bottom: 24px; }
+    .section-title { font-size: 16px; font-weight: 600; color: #f0f6fc; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .section-sub { font-size: 12px; color: #8b949e; margin-bottom: 20px; }
+    .heatmap-wrap { overflow-x: auto; }
+    .heatmap-months { display: flex; margin-left: 52px; margin-bottom: 4px; gap: 0; }
+    .heatmap-months span { font-size: 11px; color: #8b949e; width: 56px; flex-shrink: 0; }
+    .heatmap-grid { display: flex; gap: 2px; }
+    .heatmap-days { display: flex; flex-direction: column; gap: 2px; margin-right: 6px; }
+    .heatmap-days span { font-size: 10px; color: #8b949e; height: 13px; line-height: 13px; width: 24px; text-align: right; }
+    .heatmap-days span.hide { visibility: hidden; }
+    .heatmap-cols { display: flex; gap: 2px; }
+    .heatmap-col { display: flex; flex-direction: column; gap: 2px; }
+    .heatmap-cell { width: 13px; height: 13px; border-radius: 2px; cursor: pointer; transition: transform 0.1s; position: relative; }
+    .heatmap-cell:hover { transform: scale(1.3); z-index: 10; }
+    .heatmap-cell[data-v="0"] { background: #161b22; border: 1px solid #21262d; }
+    .heatmap-cell[data-v="1"] { background: #4c1d95; }
+    .heatmap-cell[data-v="2"] { background: #6d28d9; }
+    .heatmap-cell[data-v="3"] { background: #7c3aed; }
+    .heatmap-cell[data-v="4"] { background: #a78bfa; }
+    .heatmap-legend { display: flex; align-items: center; gap: 6px; margin-top: 12px; justify-content: flex-end; font-size: 11px; color: #8b949e; }
+    .legend-cell { width: 13px; height: 13px; border-radius: 2px; }
+    .category-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .cat-tab { padding: 5px 14px; border-radius: 20px; border: 1px solid #30363d; background: #161b22; color: #8b949e; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+    .cat-tab.active { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .streak-list { display: flex; flex-direction: column; gap: 10px; }
+    .streak-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #0d1117; border-radius: 8px; border: 1px solid #21262d; }
+    .streak-icon { font-size: 20px; width: 32px; text-align: center; }
+    .streak-info { flex: 1; }
+    .streak-name { font-size: 13px; font-weight: 600; color: #f0f6fc; }
+    .streak-meta { font-size: 12px; color: #8b949e; margin-top: 2px; }
+    .streak-bar-wrap { width: 80px; }
+    .streak-bar-bg { height: 6px; background: #21262d; border-radius: 3px; }
+    .streak-bar-fill { height: 6px; background: #7c3aed; border-radius: 3px; transition: width 1s; }
+    .streak-days { font-size: 13px; font-weight: 700; color: #a78bfa; min-width: 36px; text-align: right; }
+    .tooltip-box { position: fixed; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: 12px; pointer-events: none; z-index: 1000; display: none; color: #e6edf3; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+    canvas { max-height: 200px; }
+    .chart-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(3, 1fr); } .bottom-grid { grid-template-columns: 1fr; } .chart-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <strong>Demo Dashboard</strong> — All data shown is <strong>dummy/simulated data</strong> for portfolio purposes to demonstrate data visualization and front-end skills.
+</div>
+
+<header>
+  <h1>🔥 Habit &amp; Activity Heatmap</h1>
+  <p>Macarena Caviedes · Annual habit tracking across productivity, fitness, learning &amp; wellness</p>
+  <div class="year-tabs">
+    <div class="year-tab active">2025</div>
+    <div class="year-tab">2024</div>
+    <div class="year-tab">2023</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="val">247</div><div class="lbl">Active Days</div><div class="sub">↑ 18% vs last year</div></div>
+    <div class="stat-card"><div class="val">83%</div><div class="lbl">Consistency Rate</div><div class="sub">Goal: 80%</div></div>
+    <div class="stat-card"><div class="val">41</div><div class="lbl">Current Streak</div><div class="sub">🔥 Personal best!</div></div>
+    <div class="stat-card"><div class="val">1,284</div><div class="lbl">Total Activities</div><div class="sub">Across 5 categories</div></div>
+    <div class="stat-card"><div class="val">Q3</div><div class="lbl">Best Quarter</div><div class="sub">Jul – Sep 2025</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📅 Annual Activity Heatmap</div>
+    <div class="section-sub">Daily activity intensity across all tracked categories · Hover a cell for details</div>
+    <div class="category-tabs" id="catTabs">
+      <div class="cat-tab active" data-cat="all">All Categories</div>
+      <div class="cat-tab" data-cat="productivity">💼 Productivity</div>
+      <div class="cat-tab" data-cat="fitness">🏃 Fitness</div>
+      <div class="cat-tab" data-cat="learning">📚 Learning</div>
+      <div class="cat-tab" data-cat="wellness">🧘 Wellness</div>
+    </div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-months" id="heatmapMonths"></div>
+      <div class="heatmap-grid">
+        <div class="heatmap-days" id="heatmapDays"></div>
+        <div class="heatmap-cols" id="heatmapCols"></div>
+      </div>
+    </div>
+    <div class="heatmap-legend">
+      <span>Less</span>
+      <div class="legend-cell" style="background:#161b22;border:1px solid #21262d;"></div>
+      <div class="legend-cell" style="background:#4c1d95;"></div>
+      <div class="legend-cell" style="background:#6d28d9;"></div>
+      <div class="legend-cell" style="background:#7c3aed;"></div>
+      <div class="legend-cell" style="background:#a78bfa;"></div>
+      <span>More</span>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="section">
+      <div class="section-title">📊 Monthly Breakdown</div>
+      <div class="section-sub">Activities completed per month</div>
+      <canvas id="monthlyChart"></canvas>
+    </div>
+    <div class="section">
+      <div class="section-title">🍩 Category Split</div>
+      <div class="section-sub">Distribution across habit types</div>
+      <canvas id="donutChart"></canvas>
+    </div>
+    <div class="section">
+      <div class="section-title">📈 Weekly Trend</div>
+      <div class="section-sub">Rolling 12-week average</div>
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="section">
+      <div class="section-title">🏆 Habit Streaks</div>
+      <div class="section-sub">Current streaks vs personal bests</div>
+      <div class="streak-list">
+        <div class="streak-item">
+          <div class="streak-icon">💼</div>
+          <div class="streak-info"><div class="streak-name">Deep Work Blocks</div><div class="streak-meta">Best: 58 days · Started Feb 2025</div></div>
+          <div class="streak-bar-wrap"><div class="streak-bar-bg"><div class="streak-bar-fill" style="width:71%"></div></div></div>
+          <div class="streak-days">41d</div>
+        </div>
+        <div class="streak-item">
+          <div class="streak-icon">🏃</div>
+          <div class="streak-info"><div class="streak-name">Morning Run</div><div class="streak-meta">Best: 34 days · Started Apr 2025</div></div>
+          <div class="streak-bar-wrap"><div class="streak-bar-bg"><div class="streak-bar-fill" style="width:85%"></div></div></div>
+          <div class="streak-days">29d</div>
+        </div>
+        <div class="streak-item">
+          <div class="streak-icon">📚</div>
+          <div class="streak-info"><div class="streak-name">Daily Reading</div><div class="streak-meta">Best: 91 days · Started Jan 2025</div></div>
+          <div class="streak-bar-wrap"><div class="streak-bar-bg"><div class="streak-bar-fill" style="width:57%"></div></div></div>
+          <div class="streak-days">52d</div>
+        </div>
+        <div class="streak-item">
+          <div class="streak-icon">🧘</div>
+          <div class="streak-info"><div class="streak-name">Meditation</div><div class="streak-meta">Best: 47 days · Started Mar 2025</div></div>
+          <div class="streak-bar-wrap"><div class="streak-bar-bg"><div class="streak-bar-fill" style="width:38%"></div></div></div>
+          <div class="streak-days">18d</div>
+        </div>
+        <div class="streak-item">
+          <div class="streak-icon">💻</div>
+          <div class="streak-info"><div class="streak-name">Coding Practice</div><div class="streak-meta">Best: 66 days · Started Jan 2025</div></div>
+          <div class="streak-bar-wrap"><div class="streak-bar-bg"><div class="streak-bar-fill" style="width:95%"></div></div></div>
+          <div class="streak-days">63d</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📋 Day-of-Week Patterns</div>
+      <div class="section-sub">Average activities by day — identifying peak productivity days</div>
+      <canvas id="dayChart" style="max-height:260px;"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<div class="tooltip-box" id="tooltip"></div>
+
+<script>
+  // ---- Seed-based random (deterministic dummy data) ----
+  function seededRand(seed) {
+    let s = seed;
+    return function() { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+  }
+  const rng = seededRand(42);
+
+  // Generate 365 days of dummy data
+  const today = new Date(2025, 4, 4); // May 4 2025
+  const startDate = new Date(2025, 0, 1);
+  const days = [];
+  const cats = ['productivity','fitness','learning','wellness'];
+  const catLabels = { productivity:'💼 Productivity', fitness:'🏃 Fitness', learning:'📚 Learning', wellness:'🧘 Wellness' };
+
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i);
+    if (d > today) { days.push({ date: d, v: 0, cats: {} }); continue; }
+    const dow = d.getDay();
+    // Weekday boost, summer peak (months 6-8)
+    const mo = d.getMonth();
+    const seasonal = (mo >= 5 && mo <= 7) ? 1.4 : 1.0;
+    const weekday = (dow === 0 || dow === 6) ? 0.6 : 1.2;
+    const base = rng() * 4 * seasonal * weekday;
+    const v = Math.min(4, Math.floor(base + (rng() > 0.7 ? 1 : 0)));
+    const catData = {};
+    cats.forEach(c => { catData[c] = rng() > 0.45 ? Math.floor(rng() * 4) + 1 : 0; });
+    days.push({ date: d, v, cats: catData });
+  }
+
+  // ---- Build heatmap ----
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const DAYS_LBL = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  function buildHeatmap(cat) {
+    const colsEl = document.getElementById('heatmapCols');
+    const monthsEl = document.getElementById('heatmapMonths');
+    const daysEl = document.getElementById('heatmapDays');
+    colsEl.innerHTML = '';
+    monthsEl.innerHTML = '';
+    daysEl.innerHTML = '';
+
+    // Day labels (Sun-Sat)
+    ['','Mon','','Wed','','Fri',''].forEach((lb,i) => {
+      const s = document.createElement('span');
+      s.textContent = lb;
+      if (!lb) s.className = 'hide';
+      daysEl.appendChild(s);
+    });
+
+    // Pad to start on Sunday
+    const firstDow = startDate.getDay();
+    let week = [];
+    for (let p = 0; p < firstDow; p++) week.push(null);
+
+    const weeks = [];
+    days.forEach(d => {
+      week.push(d);
+      if (week.length === 7) { weeks.push(week); week = []; }
+    });
+    if (week.length) { while(week.length<7) week.push(null); weeks.push(week); }
+
+    // Month labels
+    let lastMo = -1;
+    weeks.forEach((wk, wi) => {
+      const firstReal = wk.find(d => d !== null);
+      if (firstReal) {
+        const mo = firstReal.date.getMonth();
+        if (mo !== lastMo) {
+          const span = document.createElement('span');
+          span.textContent = MONTHS[mo];
+          monthsEl.appendChild(span);
+          lastMo = mo;
+        } else {
+          const span = document.createElement('span');
+          span.textContent = '';
+          monthsEl.appendChild(span);
+        }
+      }
+    });
+
+    weeks.forEach(wk => {
+      const col = document.createElement('div');
+      col.className = 'heatmap-col';
+      wk.forEach(d => {
+        const cell = document.createElement('div');
+        cell.className = 'heatmap-cell';
+        if (!d) { cell.setAttribute('data-v','-1'); cell.style.visibility='hidden'; col.appendChild(cell); return; }
+        let val = (cat === 'all') ? d.v : (d.cats[cat] ? Math.min(4, d.cats[cat]) : 0);
+        cell.setAttribute('data-v', String(val));
+        const dateStr = d.date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        cell.addEventListener('mouseover', (e) => {
+          const tip = document.getElementById('tooltip');
+          const actCount = cat === 'all' ? Object.values(d.cats).reduce((a,b)=>a+b,0) : (d.cats[cat]||0);
+          tip.innerHTML = '<strong>' + dateStr + '</strong><br>' + (actCount ? actCount + ' activit' + (actCount===1?'y':'ies') + (cat==='all'?' across all habits':' · ' + catLabels[cat]) : 'No activity') ;
+          tip.style.display = 'block';
+          tip.style.left = (e.clientX + 14) + 'px';
+          tip.style.top = (e.clientY - 30) + 'px';
+        });
+        cell.addEventListener('mouseleave', () => { document.getElementById('tooltip').style.display = 'none'; });
+        col.appendChild(cell);
+      });
+      colsEl.appendChild(col);
+    });
+  }
+
+  buildHeatmap('all');
+
+  document.getElementById('catTabs').addEventListener('click', e => {
+    const tab = e.target.closest('.cat-tab');
+    if (!tab) return;
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    buildHeatmap(tab.dataset.cat);
+  });
+
+  // ---- Monthly bar chart ----
+  const monthlyData = Array(12).fill(0);
+  days.forEach(d => { if (d.v > 0) { const mo = d.date.getMonth(); monthlyData[mo] += Object.values(d.cats).reduce((a,b)=>a+b,0); } });
+  new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: MONTHS, datasets: [{ label: 'Activities', data: monthlyData, backgroundColor: '#7c3aed', borderRadius: 4 }] },
+    options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{ticks:{color:'#8b949e'},grid:{color:'#21262d'}}, y:{ticks:{color:'#8b949e'},grid:{color:'#21262d'}} } }
+  });
+
+  // ---- Donut chart ----
+  const catTotals = { productivity:0, fitness:0, learning:0, wellness:0 };
+  days.forEach(d => { cats.forEach(c => { catTotals[c] += d.cats[c]||0; }); });
+  new Chart(document.getElementById('donutChart').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels: ['Productivity','Fitness','Learning','Wellness'], datasets: [{ data: Object.values(catTotals), backgroundColor: ['#7c3aed','#3b82f6','#10b981','#f59e0b'], borderWidth: 0 }] },
+    options: { responsive:true, plugins:{ legend:{ labels:{ color:'#8b949e', boxWidth:12 } } }, cutout:'65%' }
+  });
+
+  // ---- 12-week rolling trend ----
+  const weeklyTotals = [];
+  for (let w = 0; w < 16; w++) {
+    const start = w * 7;
+    let sum = 0;
+    for (let d2 = start; d2 < start+7 && d2 < days.length; d2++) {
+      sum += Object.values(days[d2].cats).reduce((a,b)=>a+b,0);
+    }
+    weeklyTotals.push(sum);
+  }
+  new Chart(document.getElementById('trendChart').getContext('2d'), {
+    type: 'line',
+    data: { labels: weeklyTotals.map((_,i)=>'Wk '+(i+1)), datasets: [{ label:'Activities', data: weeklyTotals, borderColor:'#a78bfa', backgroundColor:'rgba(124,58,237,0.15)', fill:true, tension:0.4, pointRadius:3, pointBackgroundColor:'#7c3aed' }] },
+    options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{ticks:{color:'#8b949e'},grid:{color:'#21262d'}}, y:{ticks:{color:'#8b949e'},grid:{color:'#21262d'}} } }
+  });
+
+  // ---- Day of week radar/bar ----
+  const dowTotals = Array(7).fill(0);
+  const dowCounts = Array(7).fill(0);
+  days.forEach(d => { if (d.date <= today) { const dw = d.date.getDay(); dowTotals[dw] += Object.values(d.cats).reduce((a,b)=>a+b,0); dowCounts[dw]++; } });
+  const dowAvg = dowTotals.map((t,i) => dowCounts[i] ? +(t/dowCounts[i]).toFixed(1) : 0);
+  new Chart(document.getElementById('dayChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], datasets: [{ label:'Avg Activities', data: dowAvg, backgroundColor: dowAvg.map(v => v === Math.max(...dowAvg) ? '#a78bfa' : '#4c1d95'), borderRadius: 6 }] },
+    options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{ticks:{color:'#8b949e'},grid:{color:'#21262d'}}, y:{ticks:{color:'#8b949e'},grid:{color:'#21262d'},beginAtZero:true} } }
+  });
+</script>
+</body>
+</html>
