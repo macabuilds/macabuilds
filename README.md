@@ -53,6 +53,7 @@ Built with Claude AI · Fully interactive · Click to explore
 | 🏃‍♀️ **Half Marathon Trainer** | 18-week training plan, pace trends, race countdown | [→ Open Dashboard](https://macabuilds.github.io/macabuilds/dashboards/marathon-tracker.html) |
 | ⚡ **AI Productivity Log** | 11.5 hrs/week saved, 47 use cases, impact metrics | [→ Open Dashboard](https://macabuilds.github.io/macabuilds/dashboards/ai-productivity.html) |
 | 📚 **Homeschool Program** | Custom AI-designed curriculum, subject progress, schedule | [→ Open Dashboard](https://macabuilds.github.io/macabuilds/dashboards/homeschool.html) |
+| 🔥 **Habit & Activity Heatmap** | GitHub-style annual heatmap, streak tracking, day-of-week patterns | [→ Open Dashboard](https://macabuilds.github.io/macabuilds/dashboards/heatmap-tracker.html) |
 
 ## 🧠 How I Think
 
