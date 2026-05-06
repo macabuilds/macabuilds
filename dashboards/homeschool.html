@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homeschool Program | Macarena Caviedes</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+      header { background: linear-gradient(135deg, #1a1f2e, #1a2e2e); padding: 32px 40px; border-bottom: 1px solid #2d3748; }
+      header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+      header p { color: #a0aec0; margin-top: 6px; font-size: 15px; }
+      .tag { display: inline-block; background: #234e52; color: #81e6d9; padding: 3px 12px; border-radius: 20px; font-size: 12px; margin-top: 10px; margin-right: 6px; }
+      .tag-yellow { background: #744210; color: #fbd38d; }
+      .container { max-width: 1200px; margin: 0 auto; padding: 32px 40px; }
+      .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+      .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 32px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+      .card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 24px; }
+      .stat-card { text-align: center; }
+      .stat-number { font-size: 42px; font-weight: 800; }
+      .stat-label { color: #718096; font-size: 12px; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+      .stat-sub { font-size: 13px; margin-top: 6px; }
+      .teal { color: #81e6d9; }
+      .green { color: #68d391; }
+      .yellow { color: #f6e05e; }
+      .orange { color: #f6ad55; }
+      .blue { color: #63b3ed; }
+      .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #e2e8f0; }
+      .subject-card { background: #1a2e2e; border: 1px solid #2d4a4a; border-radius: 10px; padding: 18px; margin-bottom: 12px; }
+      .subject-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+      .subject-name { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+      .subject-grade { font-size: 22px; font-weight: 800; color: #81e6d9; }
+      .progress-bar { height: 8px; background: #2d4a4a; border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+      .progress-fill { height: 100%; border-radius: 4px; }
+      .subject-meta { font-size: 12px; color: #718096; }
+      .badge { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+      .badge-green { background: #1c4532; color: #68d391; }
+      .badge-teal { background: #1a3a3a; color: #81e6d9; }
+      .badge-yellow { background: #744210; color: #f6e05e; }
+      .badge-blue { background: #1a365d; color: #63b3ed; }
+      .week-block { background: #2d3748; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; }
+      .week-block-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+      .week-block-items { font-size: 13px; color: #a0aec0; line-height: 1.8; }
+      .schedule-row { display: grid; grid-template-columns: 80px 1fr 1fr 1fr 1fr 1fr; gap: 8px; padding: 8px 0; border-bottom: 1px solid #2d3748; font-size: 13px; }
+      .schedule-row.header { color: #718096; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+      .time-block { background: #2d3748; border-radius: 6px; padding: 6px 10px; text-align: center; font-size: 12px; }
+      .tb-math { background: #1a365d; color: #63b3ed; }
+      .tb-read { background: #1c4532; color: #68d391; }
+      .tb-sci { background: #1a3a3a; color: #81e6d9; }
+      .tb-hist { background: #744210; color: #f6ad55; }
+      .tb-art { background: #44337a; color: #b794f4; }
+      .tb-es { background: #63171b; color: #fc8181; }
+      .tb-break { background: #2d3748; color: #718096; }
+      table { width: 100%; border-collapse: collapse; }
+      th { text-align: left; padding: 10px 14px; background: #2d3748; color: #a0aec0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+      td { padding: 12px 14px; border-bottom: 1px solid #2d3748; font-size: 14px; }
+      footer { text-align: center; padding: 24px; color: #4a5568; font-size: 13px; border-top: 1px solid #2d3748; margin-top: 20px; }
+      canvas { max-height: 260px; }
+    </style>
+  </head>
+  <body>
+    <header>
+        <h1>Homeschool Program Dashboard</h1>
+      <p>Macarena Caviedes — Custom AI-Designed Curriculum · Q2 2026</p>
+      <span class="tag">Grade 2</span>span>
+      <span class="tag">Q2 2026</span>span>
+      <span class="tag tag-yellow">AI-Designed</span>span>
+    </header>
+  
+  <div class="container">
+  
+    <!-- KPIs -->
+    <div class="grid-4">
+        <div class="card stat-card">
+              <div class="stat-number teal">5/8</div>div>
+              <div class="stat-label">Modules Complete</div>div>
+              <div class="stat-sub teal">Q2 progress</div>div>
+        </div>div>
+        <div class="card stat-card">
+              <div class="stat-number green">94%</div>div>
+              <div class="stat-label">Avg Assessment Score</div>div>
+              <div class="stat-sub green">across all subjects</div>div>
+        </div>div>
+        <div class="card stat-card">
+              <div class="stat-number yellow">6</div>div>
+              <div class="stat-label">Subjects Active</div>div>
+              <div class="stat-sub yellow">Math, Reading, Science, History, Art, Spanish</div>div>
+        </div>div>
+        <div class="card stat-card">
+              <div class="stat-number blue">18</div>div>
+              <div class="stat-label">Hrs/Week Learning</div>div>
+              <div class="stat-sub blue">structured + project-based</div>div>
+        </div>div>
+    </div>div>
+  
+    <div class="grid-2">
+        <!-- Subject Progress -->
+        <div class="card">
+              <div class="section-title">📚 Subject Progress — Q2 2026</div>div>
+        
+              <div class="subject-card">
+                      <div class="subject-header">
+                                <span class="subject-name">➕ Mathematics</span>span>
+                                <span class="subject-grade">96%</span>span>
+                      </div>div>
+                      <div class="progress-bar"><div class="progress-fill" style="width:96%;background:linear-gradient(90deg,#2b6cb0,#63b3ed)"></div>div></div>div>
+                      <div class="subject-meta">Current: Multi-digit multiplication · Next: Division intro · <span class="badge badge-blue">On Track</span>span></div>div>
+              </div>div>
+        
+              <div class="subject-card">
+                      <div class="subject-header">
+                                <span class="subject-name">📖 Reading & Writing</span>span>
+                                <span class="subject-grade">98%</span>span>
+                      </div>div>
+                      <div class="progress-bar"><div class="progress-fill" style="width:98%;background:linear-gradient(90deg,#276749,#68d391)"></div>div></div>div>
+                      <div class="subject-meta">Current: Chapter books + narrative writing · <span class="badge badge-green">Excelling</span>span></div>div>
+              </div>div>
+        
+              <div class="subject-card">
+                      <div class="subject-header">
+                                <span class="subject-name">🔬 Science</span>span>
+                                <span class="subject-grade">91%</span>span>
+                      </div>div>
+                      <div class="progress-bar"><div class="progress-fill" style="width:91%;background:linear-gradient(90deg,#234e52,#81e6d9)"></div>div></div>div>
+                      <div class="subject-meta">Current: Life cycles & ecosystems · Lab projects weekly · <span class="badge badge-teal">On Track</span>span></div>div>
+              </div>div>
+        
+              <div class="subject-card">
+                      <div class="subject-header">
+                                <span class="subject-name">🌍 History & Geography</span>span>
+                                <span class="subject-grade">89%</span>span>
+                      </div>div>
+                      <div class="progress-bar"><div class="progress-fill" style="width:89%;background:linear-gradient(90deg,#7b341e,#f6ad55)"></div>div></div>div>
+                      <div class="subject-meta">Current: US history — explorers to founding · <span class="badge badge-yellow">On Track</span>span></div>div>
+              </div>div>
+        
+              <div class="subject-card">
+                      <div class="subject-header">
+                                <span class="subject-name">🎨 Art & Creativity</span>span>
+                                <span class="subject-grade">100%</span>span>
+                      </div>div>
+                      <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#553c9a,#b794f4)"></div>div></div>div>
+                      <div class="subject-meta">Projects: Watercolor, collage, digital art · <span class="badge badge-green">Loves it!</span>span></div>div>
+              </div>div>
+        
+              <div class="subject-card" style="margin-bottom:0">
+                      <div class="subject-header">
+                                <span class="subject-name">🇪🇸 Spanish</span>span>
+                                <span class="subject-grade">88%</span>span>
+                      </div>div>
+                      <div class="progress-bar"><div class="progress-fill" style="width:88%;background:linear-gradient(90deg,#63171b,#fc8181)"></div>div></div>div>
+                      <div class="subject-meta">Conversational practice daily · Native speaker advantage · <span class="badge badge-green">Bilingual Track</span>span></div>div>
+              </div>div>
+        </div>div>
+    
+        <!-- Charts -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+              <div class="card">
+                      <div class="section-title">📊 Assessment Scores by Subject</div>div>
+                      <canvas id="subjectChart"></canvas>canvas>
+              </div>div>
+              <div class="card">
+                      <div class="section-title">📈 Learning Hours per Week</div>div>
+                      <canvas id="hoursChart"></canvas>canvas>
+              </div>div>
+        </div>div>
+    </div>div>
+  
+    <!-- Weekly Schedule -->
+    <div class="card" style="margin-bottom:32px">
+        <div class="section-title">📅 Weekly Schedule</div>div>
+        <div class="schedule-row header">
+              <div>Time</div><div>Monday</div><div>Tuesday</div><div>Wednesday</div><div>Thursday</div><div>Friday</div>
+        </div>
+        <div class="schedule-row">
+                <div style="color:#718096;font-size:12px">8:30–9:15</div>
+                <div class="time-block tb-math">Math</div>
+                <div class="time-block tb-math">Math</div>
+                <div class="time-block tb-math">Math</div>
+                <div class="time-block tb-math">Math</div>
+                <div class="time-block tb-math">Math Review</div>
+        </div>
+          <div class="schedule-row">
+                  <div style="color:#718096;font-size:12px">9:15–10:00</div>
+                  <div class="time-block tb-read">Reading</div>
+                  <div class="time-block tb-read">Reading</div>
+                  <div class="time-block tb-read">Reading</div>
+                  <div class="time-block tb-read">Reading</div>
+                  <div class="time-block tb-read">Free Read</div>
+          </div>
+          <div class="schedule-row">
+                  <div style="color:#718096;font-size:12px">10:00–10:15</div>
+                  <div class="time-block tb-break">Break</div>
+                  <div class="time-block tb-break">Break</div>
+                  <div class="time-block tb-break">Break</div>
+                  <div class="time-block tb-break">Break</div>
+                  <div class="time-block tb-break">Break</div>
+          </div>
+          <div class="schedule-row">
+                  <div style="color:#718096;font-size:12px">10:15–11:00</div>
+                  <div class="time-block tb-sci">Science</div>
+                  <div class="time-block tb-hist">History</div>
+                  <div class="time-block tb-sci">Science Lab</div>
+                  <div class="time-block tb-hist">Geography</div>
+                  <div class="time-block tb-art">Art Project</div>
+          </div>
+          <div class="schedule-row" style="border:none">
+                  <div style="color:#718096;font-size:12px">11:00–11:30</div>
+                  <div class="time-block tb-es">Spanish</div>
+                  <div class="time-block tb-es">Spanish</div>
+                  <div class="time-block tb-es">Spanish</div>
+                  <div class="time-block tb-es">Spanish</div>
+                  <div class="time-block tb-es">Spanish</div>
+          </div>
+    </div>
+
+      <!-- Q2 Curriculum Modules -->
+      <div class="card">
+            <div class="section-title">📋 Q2 2026 — Module Tracker</div>
+            <table>
+                    <thead>
+                              <tr><th>Module</th><th>Subject Focus</th><th>Weeks</th><th>Key Project</th><th>Status</th></tr>
+                    </thead>
+                  <tbody>
+                            <tr><td>Module 1: Numbers Everywhere</td><td>Math</td><td>Wk 1–2</td><td>Real-world measurement project</td><td><span class="badge badge-green">Done</span>span></td></tr>
+                    <tr><td>Module 2: Stories Come Alive</td>td><td>Reading/Writing</td>td><td>Wk 3–4</td>td><td>Write your own short story</td>td><td><span class="badge badge-green">Done</span>span></td>td></tr>
+                    <tr><td>Module 3: Living World</td><td>Science</td><td>Wk 5–6</td><td>Butterfly life cycle observation</td><td><span class="badge badge-green">Done</span>span></td></tr>
+                    <tr><td>Module 4: Explorers and Maps</td>td><td>History/Geography</td>td><td>Wk 7–8</td>td><td>Design your own explorer map</td>td><td><span class="badge badge-green">Done</span>span></td>td></tr>
+                    <tr><td>Module 5: Multiply and Divide</td><td>Math</td><td>Wk 9–10</td><td>Multiplication facts mastery game</td><td><span class="badge badge-green">Done</span>span></td></tr>
+                    <tr><td>Module 6: Ecosystems</td>td><td>Science</td>td><td>Wk 11–12</td>td><td>Build a terrarium</td>td><td><span style="color:#f6ad55">→ Current</span>span></td>td></tr>
+                    <tr><td>Module 7: America's Story</td><td>History</td><td>Wk 13–14</td><td>Timeline project — founding of US</td><td><span style="color:#718096">Upcoming</span>span></td></tr>
+                    <tr><td>Module 8: Q2 Showcase</td>td><td>All Subjects</td>td><td>Wk 15–16</td>td><td>Portfolio presentation</td>td><td><span style="color:#718096">Upcoming</span>span></td>td></tr>
+                  </tbody>
+            </table>
+      </div>
+  
+  </div>
+  
+  <footer>Built by Macarena Caviedes using Claude AI · macabuilds · Last updated May 2026</footer>
+  
+  <script>
+    const subCtx = document.getElementById('subjectChart').getContext('2d');
+    new Chart(subCtx, {
+        type: 'bar',
+        data: {
+              labels: ['Math','Reading','Science','History','Art','Spanish'],
+              datasets: [{
+                      label: 'Score %',
+                      data: [96, 98, 91, 89, 100, 88],
+                      backgroundColor: ['#2b6cb0','#276749','#234e52','#7b341e','#553c9a','#63171b'],
+                      borderRadius: 5
+              }]
+        },
+        options: {
+              plugins: { legend: { display: false } },
+              scales: {
+                      x: { ticks: { color: '#718096' }, grid: { color: '#2d3748' } },
+                      y: { ticks: { color: '#718096' }, grid: { color: '#2d3748' }, min: 80, max: 100 }
+              }
+        }
+    });
+
+    const hCtx = document.getElementById('hoursChart').getContext('2d');
+    new Chart(hCtx, {
+        type: 'line',
+        data: {
+              labels: ['Jan','Feb','Mar','Apr','May'],
+              datasets: [{
+                      label: 'Hours/Week',
+                      data: [14, 15, 16, 17, 18],
+                      borderColor: '#81e6d9',
+                      backgroundColor: 'rgba(129,230,217,0.1)',
+                      tension: 0.4,
+                      fill: true,
+                      pointBackgroundColor: '#81e6d9'
+              }]
+        },
+        options: {
+              plugins: { legend: { labels: { color: '#a0aec0' } } },
+              scales: {
+                      x: { ticks: { color: '#718096' }, grid: { color: '#2d3748' } },
+                      y: { ticks: { color: '#718096' }, grid: { color: '#2d3748' } }
+              }
+        }
+    });
+  </script>
+  </body>
+</html>html>
+  </script></footer></tr></td></td></tr></tr></td></td></tr></tr></td></td></tr></tr></td></td></tr>
+                  </tbody></th></th></tr>
+                    </thead>
+            </table>
+        </div></div></p></h1>
+    </header>
+  </body>
+  </style></title>
+  </head>
