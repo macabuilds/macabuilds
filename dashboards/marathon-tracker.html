@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Half Marathon Training Tracker | Macarena Caviedes</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+      header { background: linear-gradient(135deg, #1a1f2e, #1a3a1a); padding: 32px 40px; border-bottom: 1px solid #2d3748; }
+      header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+      header p { color: #a0aec0; margin-top: 6px; font-size: 15px; }
+      .tag { display: inline-block; background: #276749; color: #9ae6b4; padding: 3px 12px; border-radius: 20px; font-size: 12px; margin-top: 10px; margin-right: 6px; }
+      .tag-orange { background: #7b341e; color: #fbd38d; }
+      .container { max-width: 1200px; margin: 0 auto; padding: 32px 40px; }
+      .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+      .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 32px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+      .card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 24px; }
+      .stat-card { text-align: center; }
+      .stat-number { font-size: 38px; font-weight: 800; }
+      .stat-label { color: #718096; font-size: 12px; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+      .stat-sub { font-size: 13px; margin-top: 6px; }
+      .green { color: #68d391; }
+      .orange { color: #f6ad55; }
+      .blue { color: #63b3ed; }
+      .red { color: #fc8181; }
+      .white { color: #e2e8f0; }
+      .section-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #e2e8f0; }
+      .race-countdown { text-align: center; padding: 32px; }
+      .countdown-number { font-size: 72px; font-weight: 900; color: #68d391; line-height: 1; }
+      .countdown-label { font-size: 16px; color: #718096; margin-top: 8px; }
+      .race-info { margin-top: 16px; font-size: 14px; color: #a0aec0; }
+      .week-row { display: grid; grid-template-columns: 60px 1fr 80px 80px 80px 100px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #2d3748; font-size: 14px; }
+      .week-row.header { color: #718096; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+      .week-row.current { background: #1c3a2a; border-radius: 8px; padding: 10px 12px; margin: 0 -12px; }
+      .week-num { font-weight: 700; color: #68d391; }
+      .phase-badge { padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+      .phase-base { background: #1a365d; color: #63b3ed; }
+      .phase-build { background: #1c4532; color: #68d391; }
+      .phase-peak { background: #744210; color: #f6ad55; }
+      .phase-taper { background: #44337a; color: #b794f4; }
+      .phase-race { background: #63171b; color: #fc8181; }
+      .done-check { color: #68d391; }
+      .todo-check { color: #4a5568; }
+      .current-arrow { color: #f6ad55; font-weight: bold; }
+      .progress-outer { background: #2d3748; border-radius: 8px; height: 12px; margin: 8px 0; }
+      .progress-inner { height: 12px; border-radius: 8px; background: linear-gradient(90deg, #276749, #68d391); }
+      .tip-box { background: #1c3a2a; border-left: 4px solid #68d391; padding: 16px; border-radius: 0 8px 8px 0; margin-bottom: 12px; }
+      .tip-title { font-weight: 700; font-size: 13px; color: #68d391; margin-bottom: 4px; }
+      .tip-body { font-size: 13px; color: #a0aec0; }
+      table { width: 100%; border-collapse: collapse; }
+      th { text-align: left; padding: 10px 14px; background: #2d3748; color: #a0aec0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+      td { padding: 12px 14px; border-bottom: 1px solid #2d3748; font-size: 14px; }
+      footer { text-align: center; padding: 24px; color: #4a5568; font-size: 13px; border-top: 1px solid #2d3748; margin-top: 20px; }
+      canvas { max-height: 260px; }
+    </style>
+  </head>
+  <body>
+    <header>
+        <h1>Half Marathon Training Tracker</h1>
+      <p>Macarena Caviedes — Road to 13.1 Miles</p>
+      <span class="tag">18-Week Plan</span>span>
+      <span class="tag">Week 8 of 18</span>span>
+      <span class="tag tag-orange">Race Day: Oct 19, 2026</span>span>
+    </header>
+  
+  <div class="container">
+  
+    <!-- Stats -->
+    <div class="grid-4">
+        <div class="card stat-card">
+              <div class="stat-number green">8</div>div>
+              <div class="stat-label">Current Week</div>div>
+              <div class="stat-sub green">Build Phase</div>div>
+        </div>div>
+        <div class="card stat-card">
+              <div class="stat-number blue">127</div>div>
+              <div class="stat-label">Miles Logged</div>div>
+              <div class="stat-sub blue">of ~220 planned</div>div>
+        </div>div>
+        <div class="card stat-card">
+              <div class="stat-number orange">10:42</div>div>
+              <div class="stat-label">Avg Pace (min/mi)</div>div>
+              <div class="stat-sub orange">↓ 0:28 vs Week 1</div>div>
+        </div>div>
+        <div class="card stat-card">
+              <div class="stat-number" style="color:#b794f4">167</div>div>
+              <div class="stat-label">Days to Race</div>div>
+              <div class="stat-sub" style="color:#b794f4">Oct 19, 2026</div>div>
+        </div>div>
+    </div>div>
+  
+    <div class="grid-2">
+        <!-- Countdown -->
+        <div class="card race-countdown">
+              <div class="countdown-number">167</div>div>
+              <div class="countdown-label">Days Until Race Day</div>div>
+              <div class="race-info">
+                      <strong style="color:#e2e8f0">Race:</strong>strong> Orlando Half Marathon<br>
+                      <strong style="color:#e2e8f0">Date:</strong>strong> October 19, 2026<br>
+                      <strong style="color:#e2e8f0">Goal Time:</strong>strong> Sub 2:20:00<br>
+                      <strong style="color:#e2e8f0">Current Predicted:</strong>strong> ~2:19:30
+              </div>div>
+              <div style="margin-top:20px">
+                      <div style="font-size:13px;color:#718096;margin-bottom:6px">Training Progress</div>div>
+                      <div class="progress-outer"><div class="progress-inner" style="width:44%"></div>div></div>div>
+                      <div style="font-size:13px;color:#68d391">44% Complete (8 of 18 weeks)</div>div>
+              </div>div>
+        </div>div>
+    
+        <!-- Weekly mileage chart -->
+        <div class="card">
+              <div class="section-title">📈 Weekly Mileage</div>div>
+              <canvas id="mileageChart"></canvas>canvas>
+        </div>div>
+    </div>div>
+  
+    <!-- Pace chart + Phase breakdown -->
+    <div class="grid-2">
+        <div class="card">
+              <div class="section-title">⚡ Pace Trend (min/mile)</div>div>
+              <canvas id="paceChart"></canvas>canvas>
+        </div>div>
+        <div class="card">
+              <div class="section-title">🗓️ Training Phases</div>div>
+              <table>
+                        <thead><tr><th>Phase</th><th>Weeks</th><th>Focus</th><th>Status</th></tr></thead>
+                      <tbody>
+                                  <tr><td>Base Building</td><td>1–4</td><td>Easy miles, form</td><td><span style="color:#68d391">✓ Done</span>span></td></tr>
+                        <tr><td>Build Phase</td>td><td>5–10</td>td><td>Increase mileage 10%/wk</td>td><td><span style="color:#f6ad55">→ Current</span>span></td>td></tr>
+                        <tr><td>Peak Phase</td><td>11–15</td><td>Long runs 10–12 mi</td><td><span style="color:#718096">Upcoming</span>span></td></tr>
+                        <tr><td>Taper</td>td><td>16–17</td>td><td>Reduce volume, rest</td>td><td><span style="color:#718096">Upcoming</span>span></td>td></tr>
+                        <tr><td>Race Week</td><td>18</td><td>Race day prep</td><td><span style="color:#718096">Upcoming</span>span></td></tr>
+                      </tbody>
+              </table>
+        </div>div>
+    </div>div>
+  
+    <!-- Week by week log -->
+    <div class="card" style="margin-bottom:32px">
+        <div class="section-title">📋 Training Log</div>div>
+        <div class="week-row header">
+              <div>Week</div><div>Focus</div><div>Miles</div><div>Long Run</div><div>Pace</div><div>Status</div>
+        </div>
+        <div class="week-row"><div class="week-num">W1</div><div>Easy base</div><div>12</div><div>4 mi</div><div>11:10</div><div class="done-check">✓ Done</div></div>
+        <div class="week-row"><div class="week-num">W2</div><div>Easy base</div><div>14</div><div>5 mi</div><div>11:02</div><div class="done-check">✓ Done</div></div>
+        <div class="week-row"><div class="week-num">W3</div><div>Easy base + strides</div><div>15</div><div>5.5 mi</div><div>10:55</div><div class="done-check">✓ Done</div></div>
+        <div class="week-row"><div class="week-num">W4</div><div>Recovery week</div><div>12</div><div>4 mi</div><div>11:05</div><div class="done-check">✓ Done</div></div>
+        <div class="week-row"><div class="week-num">W5</div><div>Tempo intro</div><div>16</div><div>6 mi</div><div>10:48</div><div class="done-check">✓ Done</div></div>
+        <div class="week-row"><div class="week-num">W6</div><div>Build + tempo</div><div>18</div><div>7 mi</div><div>10:45</div><div class="done-check">✓ Done</div></div>
+        <div class="week-row"><div class="week-num">W7</div><div>Hill work</div><div>19</div><div>7.5 mi</div><div>10:44</div><div class="done-check">✓ Done</div></div>
+        <div class="week-row current"><div class="week-num">W8</div><div>Build + speed work 🔥</div><div>21</div><div>8 mi</div><div>10:42</div><div class="current-arrow">← Now</div></div>
+        <div class="week-row"><div class="week-num">W9</div><div>Tempo + long</div><div>22</div><div>9 mi</div><div>—</div><div class="todo-check">Upcoming</div></div>
+        <div class="week-row"><div class="week-num">W10</div><div>Recovery week</div><div>18</div><div>7 mi</div><div>—</div><div class="todo-check">Upcoming</div></div>
+        <div class="week-row"><div class="week-num">W11–15</div><div>Peak phase</div><div>22–26</div><div>10–12 mi</div><div>—</div><div class="todo-check">Upcoming</div></div>
+        <div class="week-row"><div class="week-num">W16–17</div><div>Taper</div><div>14–10</div><div>6–8 mi</div><div>—</div><div class="todo-check">Upcoming</div></div>
+        <div class="week-row"><div class="week-num">W18</div><div>Race week 🏁</div><div>—</div><div>13.1 mi</div><div>—</div><div class="todo-check">Oct 19</div></div>
+    </div>
+  
+    <!-- AI Coaching Tips -->
+    <div class="grid-3">
+          <div class="card">
+                  <div class="section-title">🤖 AI Coach Notes</div>
+                  <div class="tip-box">
+                            <div class="tip-title">This Week's Focus</div>
+                            <div class="tip-body">Week 8 is a big mileage week. Keep your easy runs truly easy (11:00+ pace) to protect recovery for your 8-mile long run Saturday.</div>
+                  </div>
+                  <div class="tip-box">
+                            <div class="tip-title">Nutrition Reminder</div>
+                            <div class="tip-body">Practice fueling on long runs. Try a gel at mile 4 and 7. Race day is not the time to experiment.</div>
+                  </div>
+          </div>
+          <div class="card">
+                  <div class="section-title">📊 Run Type Breakdown</div>
+                  <canvas id="runTypeChart"></canvas>canvas>
+          </div>
+          <div class="card">
+                  <div class="section-title">🎯 Goal Pacing</div>
+                  <table>
+                            <thead><tr><th>Goal</th><th>Finish Time</th><th>Pace/Mile</th></tr></thead>thead>
+                          <tbody>
+                                      <tr><td>A Goal</td><td>2:15:00</td><td>10:18/mi</td></tr>
+                            <tr><td style="color:#68d391">B Goal (target)</td>td><td style="color:#68d391">2:20:00</td>td><td style="color:#68d391">10:41/mi</td>td></tr>
+                            <tr><td>C Goal</td><td>2:30:00</td><td>11:27/mi</td></tr>
+                            <tr><td>Finish</td>td><td>Any time</td>td><td>Just run!</td>td></tr>
+                          </tbody>
+                  </table>
+          </div>
+    </div>
+  
+  </div>
+  
+  <footer>Built by Macarena Caviedes using Claude AI · macabuilds · Last updated May 2026</footer>
+  
+  <script>
+    const mCtx = document.getElementById('mileageChart').getContext('2d');
+    new Chart(mCtx, {
+        type: 'bar',
+        data: {
+              labels: ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10'],
+              datasets: [{
+                      label: 'Miles',
+                      data: [12, 14, 15, 12, 16, 18, 19, 21, 22, 18],
+                      backgroundColor: (ctx) => ctx.dataIndex === 7 ? '#f6ad55' : '#276749',
+                      borderRadius: 5
+              }]
+        },
+        options: {
+              plugins: { legend: { display: false } },
+              scales: {
+                      x: { ticks: { color: '#718096' }, grid: { color: '#2d3748' } },
+                      y: { ticks: { color: '#718096' }, grid: { color: '#2d3748' },
+                                  title: { display: true, text: 'Miles', color: '#718096' } }
+              }
+        }
+    });
+
+    const pCtx = document.getElementById('paceChart').getContext('2d');
+    new Chart(pCtx, {
+        type: 'line',
+        data: {
+              labels: ['W1','W2','W3','W4','W5','W6','W7','W8'],
+              datasets: [{
+                      label: 'Avg Pace (decimal min)',
+                      data: [11.17, 11.03, 10.92, 11.08, 10.80, 10.75, 10.73, 10.70],
+                      borderColor: '#68d391',
+                      backgroundColor: 'rgba(104,211,145,0.1)',
+                      tension: 0.4,
+                      fill: true,
+                      pointBackgroundColor: '#68d391'
+              }]
+        },
+        options: {
+              plugins: { legend: { labels: { color: '#a0aec0' } } },
+              scales: {
+                      x: { ticks: { color: '#718096' }, grid: { color: '#2d3748' } },
+                      y: { ticks: { color: '#718096' }, grid: { color: '#2d3748' }, reverse: true,
+                                  title: { display: true, text: 'min/mile', color: '#718096' } }
+              }
+        }
+    });
+
+    const rCtx = document.getElementById('runTypeChart').getContext('2d');
+    new Chart(rCtx, {
+        type: 'doughnut',
+        data: {
+              labels: ['Easy Runs', 'Long Run', 'Tempo', 'Speed Work'],
+              datasets: [{
+                      data: [55, 25, 12, 8],
+                      backgroundColor: ['#276749','#68d391','#f6ad55','#63b3ed'],
+                      borderColor: '#1a1f2e',
+                      borderWidth: 3
+              }]
+        },
+        options: {
+              plugins: { legend: { labels: { color: '#a0aec0', padding: 12 } } },
+              cutout: '60%'
+        }
+    });
+  </script>
+  </body>
+</html>html>
+  </script></footer></tr></td></td></tr></tr></td></td></tr>
+                          </tbody></th></th></tr>
+                  </table>
+    </div></div></td></td></tr></tr></td></td></tr></tr></td></td></tr>
+                      </tbody></th></th></tr></thead>
+              </table></p></h1>
+    </header>
+  </body>
+  </style></title>
+  </head>
