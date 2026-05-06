@@ -1,48 +1,70 @@
-# Hi, I'm macabuilds 👋
+# macabuilds
 
-Welcome to my GitHub profile! I'm a developer passionate about building meaningful projects.
+**Strategy. Execution. Amplified by AI.**
+
+I work at the intersection of big-picture thinking and hands-on delivery. I turn ambiguous problems into clear plans — and clear plans into results. Lately I've been going deep on using AI to compress timelines, sharpen decisions, and remove friction across every area of work and life.
+
+This is my living portfolio. Not just a list of jobs — a showcase of how I think, what I build, and how I operate.
 
 ---
 
-## 🚀 About Me
+## What I Do
 
-- 🔭 Currently working on: JavaScript projects and web development
-- - 🌱 Currently learning: Modern web technologies
-  - - 👯 Open to collaborating on: Interesting open-source projects
-    - - 💬 Ask me about: JavaScript, web development, and building things
-      - - 📫 How to reach me: Connect with me on [LinkedIn](https://www.linkedin.com/in/macabuilds)
-       
-        - ---
+**Strategy and Execution** — I help organizations close the gap between vision and reality. That means defining what winning looks like, building the systems to get there, and making sure teams stay aligned and accountable through the messy middle.
 
-        ## 🛠️ Tech Stack
+**AI-Augmented Operations** — I use AI as a thinking partner, not just a tool. I systematically apply it to planning, research, communication, decision-making, and personal productivity. The goal: do better work, faster, with less friction.
 
-        ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-        ![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
-        ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
-        ![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)
-        ![GitHub](https://img.shields.io/badge/-GitHub-181717?style=flat-square&logo=github&logoColor=white)
+**Learning by Building** — When I want to understand something, I build a version of it. From homeschool curricula to marathon training platforms, I solve real problems with real systems.
 
-        ---
+---
 
-        ## 📂 Featured Projects
+## Dashboards and Projects
 
-        | Project | Description | Tech |
-        |---------|-------------|------|
-        | [emi-homeschool](https://github.com/macabuilds/emi-homeschool) | Homeschool management app | JavaScript |
+Interactive tools I have built using Claude and AI. Click to explore each one.
 
-        ---
+| Project | Description | Link |
+|---------|-------------|------|
+| OKR and Goals Tracker | Visual dashboard tracking goals across work, personal, and side projects with progress indicators | [View Dashboard](dashboards/okr-tracker.html) |
+| Half Marathon Training Tracker | Dynamic training platform with weekly mileage, pace trends, and race-day readiness score | [View Dashboard](dashboards/marathon-tracker.html) |
+| AI Productivity Log | Weekly log of how AI is used across work and life, showing time saved and output quality | [View Dashboard](dashboards/ai-productivity.html) |
+| Homeschool Program Builder | Custom curriculum, schedule, and progress tracker built for personalized at-home learning | [View Dashboard](dashboards/homeschool.html) |
+| Decision Log | Structured record of key decisions with context, options considered, and outcomes | Coming Soon |
+| Weekly Review System | Personal and professional reflection template with trend tracking over time | Coming Soon |
 
-        ## 📊 GitHub Stats
+---
 
-        ![macabuilds's GitHub stats](https://github-readme-stats.vercel.app/api?username=macabuilds&show_icons=true&theme=default)
+## Why I Build
 
-        ---
+I do not wait for the perfect tool to exist. If something is slowing me down — whether it is training for a race, educating my child, or running a strategy process at work — I build a system for it. AI just made that 10x faster and more accessible.
 
-        ## 📬 Connect With Me
+The projects in this portfolio are not side projects for the sake of it. Each one solves a real problem I was actually facing. That is the only filter I use.
 
-        [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/macabuilds)
-        [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/macabuilds)
+---
 
-        ---
+## How I Think About Work
 
-        *This profile is linked from my LinkedIn. Feel free to explore my repositories!*
+**Clarity before speed** — 30 minutes of alignment saves 3 days of rework.
+
+**Systems over willpower** — If it depends on me remembering it, it will eventually fail.
+
+**AI as leverage, not replacement** — I use AI to think more, not less. Better questions. Faster stress-testing. More options on the table.
+
+**Execution is the strategy** — The best plan that never ships is just a document. The gap between decision and delivery is where most things die.
+
+---
+
+## Tools I Use
+
+Claude · Notion · ChatGPT · Google Workspace · Slack · Miro · Zapier · GitHub
+
+---
+
+## Connect
+
+I am always up for conversations about strategy, AI in the workplace, building better systems, or how to run a half marathon without falling apart.
+
+[Connect on LinkedIn](https://www.linkedin.com/in/macabuilds) · [Explore my repositories](https://github.com/macabuilds?tab=repositories)
+
+---
+
+*This portfolio is maintained by macabuilds. Last updated May 2026. Powered by curiosity and Claude.*
